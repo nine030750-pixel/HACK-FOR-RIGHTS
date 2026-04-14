@@ -1,0 +1,1 @@
+# HACK-FOR-RIGHTS
