@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เอกสารที่ต้องใช้ — สิทธิถึงบ้าน</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="phone-outer">
+    <div class="phone">
+
+      <!-- ══════════════════════════════
+           SCREEN 5: DOCS
+      ══════════════════════════════ -->
+      <section id="screen-docs" class="screen active">
+        <div class="status-bar">
+          <span>00:00</span>
+          <span>🔋 88%</span>
+        </div>
+
+        <header class="topbar">
+          <button class="topbar__back" onclick="App.showScreen('screen-home')">← กลับ</button>
+          <div class="topbar__title">เอกสารที่ต้องใช้</div>
+          <button onclick="App.showScreen('screen-settings')" style="background:none;border:none;cursor:pointer;font-size:1.5rem;line-height:1;padding:4px 6px;margin-left:auto;" aria-label="ตั้งค่า" title="ตั้งค่า">⚙️</button>
+        </header>
+
+        <main class="content">
+          <section class="info-card">
+            <p class="info-card__title">เช็กก่อนออกจากบ้าน</p>
+            <p class="info-card__desc">เมื่อเตรียมครบแล้ว จะช่วยให้ติดต่อรับสิทธิได้ง่ายขึ้น</p>
+          </section>
+
+          <div class="quiz-progress">
+            <div class="quiz-progress__label" id="checklistProgressLabel">เตรียมแล้ว 0 / 5 รายการ</div>
+            <div class="progress-track">
+              <div class="progress-fill" id="checklistProgressFill" style="width:0%"></div>
+            </div>
+          </div>
+
+          <section class="checklist-card">
+            <label class="checklist-item"><input type="checkbox" checked /><span>บัตรประชาชนตัวจริง</span></label>
+            <label class="checklist-item"><input type="checkbox" /><span>ทะเบียนบ้าน</span></label>
+            <label class="checklist-item"><input type="checkbox" /><span>สมุดบัญชีธนาคาร</span></label>
+            <label class="checklist-item"><input type="checkbox" /><span>บัตรนัด / เอกสารจากหน่วยงาน</span></label>
+            <label class="checklist-item"><input type="checkbox" /><span>ใบมอบอำนาจ (ถ้ามีผู้ไปแทน)</span></label>
+          </section>
+
+          <section class="result-box">
+            <p class="result-box__title">คำแนะนำ</p>
+            <div class="right-item">
+              <span class="right-item__dot"></span>
+              <span class="right-item__text">หากเอกสารไม่ครบ ให้กด "ขอคนช่วย" เพื่อให้อาสาช่วยตรวจสอบ</span>
+            </div>
+            <div class="right-item">
+              <span class="right-item__dot"></span>
+              <span class="right-item__text">ถ่ายรูปเอกสารเก็บไว้ในโทรศัพท์ได้ จะสะดวกเวลาใช้งาน</span>
+            </div>
+          </section>
+
+          <button class="btn-primary" onclick="App.showScreen('screen-steps')">🪜 ดูขั้นตอนต่อไป</button>
+        </main>
+
+        <nav class="nav-bar">
+          <button class="nav-item" onclick="App.showScreen('screen-home')">
+            <span class="nav-item__icon">🏠</span>หน้าหลัก
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-rights')">
+            <span class="nav-item__icon">📋</span>สิทธิ
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-voice')">
+            <span class="nav-item__icon">🎙️</span>พูด
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-volunteer')">
+            <span class="nav-item__icon">🤝</span>อาสา
+          </button>
+        </nav>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Page-navigation bridge — routes showScreen() calls to their own HTML file
+    const _originalShowScreen = App.showScreen;
+    const pageMap = {
+      'screen-home':        'index.html',
+      'screen-rights':      'rights.html',
+      'screen-voice':       'voice.html',
+      'screen-volunteer':   'volunteer.html',
+      'screen-docs':        'docs.html',
+      'screen-steps':       'steps.html',
+      'screen-appointments':'appointments.html',
+      'screen-settings':    'settings.html'
+    };
+    App.showScreen = function(screenId) {
+      const page = pageMap[screenId];
+      if (page && !document.getElementById(screenId)) {
+        window.location.href = page;
+      } else {
+        _originalShowScreen(screenId);
+      }
+    };
+  </script>
+</body>
+</html>
