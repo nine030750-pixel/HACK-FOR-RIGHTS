@@ -22,8 +22,8 @@
             <div class="topbar__tagline">รู้สิทธิ พูดได้ มีคนช่วย</div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-            <button id="emergencyBtn" class="topbar__sos">🆘 SOS</button>
             <button onclick="App.openSettings()" style="background:none;border:none;cursor:pointer;font-size:1.5rem;line-height:1;padding:2px 4px;" aria-label="ตั้งค่า" title="ตั้งค่า">⚙️</button>
+            <button id="emergencyBtn" class="topbar__sos">🆘 SOS</button>
           </div>
         </header>
 
@@ -120,7 +120,7 @@
           <div class="quick-help-card">
             <div class="quick-help-card__title">ช่วยเหลือด่วน</div>
             <div class="quick-help-card__desc">
-              หากต้องการความช่วยเหลือทันที สามารถกดปุ่มฉุกเฉินด้านบนหรือด้านล่างได้
+              หากต้องการความช่วยเหลือทันที สามารถกดปุ่มฉุกเฉินด้านบนได้
             </div>
           </div>
 
@@ -271,7 +271,6 @@
 
   <script src="app.js"></script>
   <script>
-    // Page-navigation bridge — routes showScreen() calls to their own HTML file
     const _originalShowScreen = App.showScreen;
     const pageMap = {
       'screen-home':        'index.html',
@@ -299,8 +298,6 @@
       if (valEl) valEl.textContent = pct;
       if (labelEl) labelEl.textContent = 'ปัจจุบัน: ' + pct;
     }
-
-    // Update panel font display on load
     window.addEventListener('load', syncPanelFont);
   </script>
 </body>
