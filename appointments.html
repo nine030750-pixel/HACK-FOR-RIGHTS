@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>นัดหมายของฉัน — สิทธิถึงบ้าน</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="phone-outer">
+    <div class="phone">
+
+      <!-- ══════════════════════════════
+           SCREEN 7: APPOINTMENTS
+      ══════════════════════════════ -->
+      <section id="screen-appointments" class="screen active">
+        <div class="status-bar">
+          <span>00:00</span>
+          <span>🔋 88%</span>
+        </div>
+
+        <header class="topbar">
+          <button class="topbar__back" onclick="App.showScreen('screen-home')">← กลับ</button>
+          <div class="topbar__title">นัดหมายของฉัน</div>
+          <button onclick="App.showScreen('screen-settings')" style="background:none;border:none;cursor:pointer;font-size:1.5rem;line-height:1;padding:4px 6px;margin-left:auto;" aria-label="ตั้งค่า" title="ตั้งค่า">⚙️</button>
+        </header>
+
+        <main class="content">
+          <div class="schedule-card">
+            <div class="schedule-card__date">พรุ่งนี้</div>
+            <div class="schedule-card__title">รับเบี้ยยังชีพผู้สูงอายุ</div>
+            <div class="schedule-card__desc">อบต.บางบัวทอง เวลา 09:00 น.</div>
+          </div>
+
+          <div class="schedule-card">
+            <div class="schedule-card__date">วันพุธ</div>
+            <div class="schedule-card__title">อาสาเข้าช่วยตรวจเอกสาร</div>
+            <div class="schedule-card__desc">คุณสมใจ จันทร์ดี เวลา 10:30 น.</div>
+          </div>
+
+          <div class="schedule-card">
+            <div class="schedule-card__date">สัปดาห์หน้า</div>
+            <div class="schedule-card__title">ตรวจสุขภาพตามสิทธิ</div>
+            <div class="schedule-card__desc">รพ.สต.บางรักน้อย เวลา 08:30 น.</div>
+          </div>
+
+          <div class="quick-help-card">
+            <div class="quick-help-card__title">เคล็ดลับ</div>
+            <div class="quick-help-card__desc">
+              ควรเตรียมเอกสารไว้ล่วงหน้า 1 วัน และให้ลูกหลานช่วยตรวจสอบอีกครั้ง
+            </div>
+          </div>
+        </main>
+
+        <nav class="nav-bar">
+          <button class="nav-item" onclick="App.showScreen('screen-home')">
+            <span class="nav-item__icon">🏠</span>หน้าหลัก
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-rights')">
+            <span class="nav-item__icon">📋</span>สิทธิ
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-voice')">
+            <span class="nav-item__icon">🎙️</span>พูด
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-volunteer')">
+            <span class="nav-item__icon">🤝</span>อาสา
+          </button>
+        </nav>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Page-navigation bridge — routes showScreen() calls to their own HTML file
+    const _originalShowScreen = App.showScreen;
+    const pageMap = {
+      'screen-home':        'index.html',
+      'screen-rights':      'rights.html',
+      'screen-voice':       'voice.html',
+      'screen-volunteer':   'volunteer.html',
+      'screen-docs':        'docs.html',
+      'screen-steps':       'steps.html',
+      'screen-appointments':'appointments.html',
+      'screen-settings':    'settings.html'
+    };
+    App.showScreen = function(screenId) {
+      const page = pageMap[screenId];
+      if (page && !document.getElementById(screenId)) {
+        window.location.href = page;
+      } else {
+        _originalShowScreen(screenId);
+      }
+    };
+  </script>
+</body>
+</html>
