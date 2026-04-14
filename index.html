@@ -20,10 +20,17 @@
         </div>
 
         <header class="topbar topbar--logo">
-          <div>
+          <button class="menu-btn" onclick="App.openSettings()" aria-label="เปิดเมนูการตั้งค่า">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          <div class="topbar__brand">
             <div class="topbar__logo">สิทธิถึงบ้าน</div>
             <div class="topbar__tagline">รู้สิทธิ พูดได้ มีคนช่วย</div>
           </div>
+
           <button id="emergencyBtn" class="topbar__sos">🆘 SOS</button>
         </header>
 
@@ -31,13 +38,6 @@
           <section class="welcome-card">
             <p class="greeting">สวัสดี คุณยายสมจิตร</p>
             <p class="subtext">วันนี้ต้องการให้เราช่วยเรื่องอะไรคะ</p>
-
-            <div class="font-tools">
-              <button id="decreaseFontBtn" class="font-btn">A-</button>
-              <span id="fontScaleLabel" class="font-scale-label">100%</span>
-              <button id="increaseFontBtn" class="font-btn">A+</button>
-              <button id="resetFontBtn" class="font-btn font-btn--reset">รีเซ็ต</button>
-            </div>
           </section>
 
           <div class="stats-row">
@@ -70,37 +70,6 @@
             <div class="reminder-card__text">
               <div class="reminder-card__title">นัดพรุ่งนี้ — รับเบี้ยยังชีพ</div>
               <div class="reminder-card__sub">อบต.บางบัวทอง เวลา 09:00 น.</div>
-            </div>
-          </div>
-
-          <div class="quick-contact-section">
-            <div class="section-head">
-              <div class="section-head__title">ติดต่อด่วน</div>
-              <div class="section-head__sub">กดครั้งเดียวเพื่อติดต่อทันที</div>
-            </div>
-
-            <div class="quick-contact-grid">
-              <a class="contact-card contact-card--caregiver" href="tel:0999999999">
-                <div class="contact-card__icon-wrap">
-                  <span class="contact-card__icon">📞</span>
-                </div>
-                <div class="contact-card__content">
-                  <div class="contact-card__title">โทรหาผู้ดูแล</div>
-                  <div class="contact-card__desc">ติดต่อคนในครอบครัวหรือผู้ดูแลทันที</div>
-                </div>
-                <span class="contact-card__arrow">→</span>
-              </a>
-
-              <a class="contact-card contact-card--emergency" href="tel:1669">
-                <div class="contact-card__icon-wrap">
-                  <span class="contact-card__icon">🚑</span>
-                </div>
-                <div class="contact-card__content">
-                  <div class="contact-card__title">โทรฉุกเฉิน 1669</div>
-                  <div class="contact-card__desc">ใช้เมื่อต้องการความช่วยเหลือเร่งด่วน</div>
-                </div>
-                <span class="contact-card__arrow">→</span>
-              </a>
             </div>
           </div>
 
@@ -651,6 +620,123 @@
           </button>
         </nav>
       </section>
+
+      <!-- Settings overlay -->
+      <div class="settings-overlay" id="settingsOverlay" onclick="App.closeSettings()"></div>
+
+      <!-- Settings panel -->
+      <aside class="settings-panel" id="settingsPanel" aria-hidden="true">
+        <div class="settings-panel__header">
+          <div>
+            <div class="settings-panel__title">การตั้งค่า</div>
+            <div class="settings-panel__sub">สำหรับผู้สูงอายุและผู้ดูแล</div>
+          </div>
+          <button class="settings-close" onclick="App.closeSettings()">✕</button>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section__title">การแสดงผล</div>
+
+          <div class="settings-card">
+            <div class="settings-row settings-row--column">
+              <div>
+                <div class="settings-row__title">ขนาดตัวอักษร</div>
+                <div class="settings-row__desc">ปรับให้ตัวหนังสืออ่านง่ายขึ้น</div>
+              </div>
+
+              <div class="font-tools font-tools--drawer">
+                <button id="decreaseFontBtn" class="font-btn">A-</button>
+                <span id="fontScaleLabel" class="font-scale-label">100%</span>
+                <button id="increaseFontBtn" class="font-btn">A+</button>
+                <button id="resetFontBtn" class="font-btn font-btn--reset">รีเซ็ต</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row__title">คอนทราสต์สูง</div>
+                <div class="settings-row__desc">ช่วยให้อ่านข้อความและปุ่มได้ชัดขึ้น</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="contrastToggle" onchange="App.toggleHighContrast(this.checked)">
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row__title">ลดการเคลื่อนไหว</div>
+                <div class="settings-row__desc">ลดแอนิเมชันเพื่อความสบายตา</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="motionToggle" onchange="App.toggleReduceMotion(this.checked)">
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section__title">การช่วยเหลือ</div>
+
+          <div class="settings-card">
+            <div class="settings-row">
+              <div>
+                <div class="settings-row__title">อ่านออกเสียงอัตโนมัติ</div>
+                <div class="settings-row__desc">ให้ระบบอ่านผลประเมินสิทธิหลังตอบครบ</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="autoSpeakToggle" onchange="App.toggleAutoSpeak(this.checked)">
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row__title">ปุ่มฉุกเฉินขนาดใหญ่</div>
+                <div class="settings-row__desc">ทำปุ่ม SOS ให้เด่นและกดง่ายขึ้น</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="bigEmergencyToggle" onchange="App.toggleBigEmergency(this.checked)">
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row__title">โหมดผู้ดูแล</div>
+                <div class="settings-row__desc">ปรับข้อความให้เหมาะกับลูกหลานหรือผู้ช่วยใช้งานแทน</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="caregiverModeToggle" onchange="App.toggleCaregiverMode(this.checked)">
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section__title">ติดต่อด่วน</div>
+
+          <div class="settings-card">
+            <a class="settings-link-card" href="tel:1669">
+              <div class="settings-link-card__icon">🚑</div>
+              <div>
+                <div class="settings-link-card__title">โทรฉุกเฉิน 1669</div>
+                <div class="settings-link-card__desc">ใช้เมื่อต้องการความช่วยเหลือเร่งด่วน</div>
+              </div>
+            </a>
+
+            <a class="settings-link-card" href="tel:0999999999">
+              <div class="settings-link-card__icon">📞</div>
+              <div>
+                <div class="settings-link-card__title">โทรหาผู้ดูแล</div>
+                <div class="settings-link-card__desc">ติดต่อคนในครอบครัวหรือผู้ช่วยทันที</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </aside>
 
     </div>
   </div>
