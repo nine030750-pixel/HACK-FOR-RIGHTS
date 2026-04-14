@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>สิทธิถึงบ้าน</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="phone-outer">
+    <div class="phone">
+
+      <!-- =========================
+           SCREEN 1: HOME
+      ========================== -->
+      <section id="screen-home" class="screen active">
+        <div class="status-bar">
+          <span>00:00</span>
+          <span>🔋 88%</span>
+        </div>
+
+        <header class="topbar topbar--logo">
+          <div>
+            <div class="topbar__logo">สิทธิถึงบ้าน</div>
+            <div class="topbar__tagline">รู้สิทธิ พูดได้ มีคนช่วย</div>
+          </div>
+          <button id="emergencyBtn" class="topbar__sos">🆘 SOS</button>
+        </header>
+
+        <main class="content">
+          <section class="welcome-card">
+            <p class="greeting">สวัสดี คุณยายสมจิตร</p>
+            <p class="subtext">วันนี้ต้องการให้เราช่วยเรื่องอะไรคะ</p>
+
+            <div class="font-tools">
+              <button id="decreaseFontBtn" class="font-btn">A-</button>
+              <span id="fontScaleLabel" class="font-scale-label">100%</span>
+              <button id="increaseFontBtn" class="font-btn">A+</button>
+              <button id="resetFontBtn" class="font-btn font-btn--reset">รีเซ็ต</button>
+            </div>
+          </section>
+
+          <div class="tab-pills">
+            <button class="tab-pill active" type="button">สิทธิของฉัน</button>
+            <button class="tab-pill" type="button">เอกสาร</button>
+            <button class="tab-pill" type="button">นัดหมาย</button>
+          </div>
+
+          <button class="btn-voice-main" onclick="App.showScreen('screen-voice')">
+            🎤 เริ่มพูดถามปัญหา
+          </button>
+
+          <div class="reminder-card">
+            <span class="reminder-card__icon">🔔</span>
+            <div class="reminder-card__text">
+              <div class="reminder-card__title">นัดพรุ่งนี้ — รับเบี้ยยังชีพ</div>
+              <div class="reminder-card__sub">อบต.บางบัวทอง เวลา 09:00 น.</div>
+            </div>
+          </div>
+
+          <div class="quick-contact-section">
+            <div class="section-head">
+              <div class="section-head__title">ติดต่อด่วน</div>
+              <div class="section-head__sub">กดครั้งเดียวเพื่อติดต่อทันที</div>
+            </div>
+
+            <div class="quick-contact-grid">
+              <a class="contact-card contact-card--caregiver" href="tel:0999999999">
+                <div class="contact-card__icon-wrap">
+                  <span class="contact-card__icon">📞</span>
+                </div>
+                <div class="contact-card__content">
+                  <div class="contact-card__title">โทรหาผู้ดูแล</div>
+                  <div class="contact-card__desc">ติดต่อคนในครอบครัวหรือผู้ดูแลทันที</div>
+                </div>
+                <span class="contact-card__arrow">→</span>
+              </a>
+
+              <a class="contact-card contact-card--emergency" href="tel:1669">
+                <div class="contact-card__icon-wrap">
+                  <span class="contact-card__icon">🚑</span>
+                </div>
+                <div class="contact-card__content">
+                  <div class="contact-card__title">โทรฉุกเฉิน 1669</div>
+                  <div class="contact-card__desc">ใช้เมื่อต้องการความช่วยเหลือเร่งด่วน</div>
+                </div>
+                <span class="contact-card__arrow">→</span>
+              </a>
+            </div>
+          </div>
+
+          <p class="section-label">บริการที่แนะนำ</p>
+
+          <div class="main-grid">
+            <button class="main-card" onclick="App.showScreen('screen-rights')">
+              <div class="main-card__icon">🗂️</div>
+              <div class="main-card__label">เช็กสิทธิ</div>
+              <div class="main-card__desc">ดูว่าคุณได้รับสิทธิอะไรบ้าง</div>
+            </button>
+
+            <button class="main-card" onclick="App.showScreen('screen-voice')">
+              <div class="main-card__icon">🎤</div>
+              <div class="main-card__label">ถามด้วยเสียง</div>
+              <div class="main-card__desc">พูดได้ทันที ไม่ต้องพิมพ์</div>
+            </button>
+
+            <button class="main-card" onclick="App.showScreen('screen-volunteer')">
+              <div class="main-card__icon">🤝</div>
+              <div class="main-card__label">ขอคนช่วย</div>
+              <div class="main-card__desc">นัดอาสามาช่วยที่บ้าน</div>
+            </button>
+
+            <button class="main-card" onclick="App.showScreen('screen-docs')">
+              <div class="main-card__icon">📄</div>
+              <div class="main-card__label">เอกสารที่ต้องใช้</div>
+              <div class="main-card__desc">เช็กก่อนออกจากบ้าน</div>
+            </button>
+          </div>
+
+          <button class="service-wide-card" onclick="App.showScreen('screen-steps')">
+            <div class="service-wide-card__icon">🪜</div>
+            <div class="service-wide-card__text">
+              <div class="service-wide-card__title">ขั้นตอนการรับสิทธิ</div>
+              <div class="service-wide-card__desc">ดูแบบทีละขั้น เข้าใจง่าย</div>
+            </div>
+          </button>
+
+          <button class="service-wide-card" onclick="App.showScreen('screen-appointments')">
+            <div class="service-wide-card__icon">🗓️</div>
+            <div class="service-wide-card__text">
+              <div class="service-wide-card__title">นัดหมายของฉัน</div>
+              <div class="service-wide-card__desc">ดูวันนัด รับเบี้ย ยื่นเอกสาร และอาสา</div>
+            </div>
+          </button>
+
+          <div class="quick-help-card">
+            <div class="quick-help-card__title">ช่วยเหลือด่วน</div>
+            <div class="quick-help-card__desc">
+              หากต้องการความช่วยเหลือทันที สามารถกดปุ่มฉุกเฉินด้านบนหรือด้านล่างได้
+            </div>
+          </div>
+
+          <a class="btn-emergency" href="tel:1669">
+            🆘 โทรฉุกเฉิน 1669
+          </a>
+        </main>
+
+        <nav class="nav-bar">
+          <button class="nav-item active" onclick="App.showScreen('screen-home')">
+            <span class="nav-item__icon">🏠</span>หน้าหลัก
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-rights')">
+            <span class="nav-item__icon">📋</span>สิทธิ
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-voice')">
+            <span class="nav-item__icon">🎙️</span>พูด
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-volunteer')">
+            <span class="nav-item__icon">🤝</span>อาสา
+          </button>
+        </nav>
+      </section>
+
+      <!-- =========================
+           SCREEN 2: RIGHTS
+      ========================== -->
+      <section id="screen-rights" class="screen">
+        <div class="status-bar">
+          <span>00:00</span><span>🔋 88%</span>
+        </div>
+
+        <header class="topbar">
+          <button class="topbar__back" onclick="App.showScreen('screen-home')">← กลับ</button>
+          <div class="topbar__title">เช็กสิทธิของฉัน</div>
+        </header>
+
+        <main class="content">
+          <section class="info-card">
+            <p class="info-card__title">ตอบคำถามสั้น ๆ</p>
+            <p class="info-card__desc">เพื่อช่วยประเมินสิทธิที่เหมาะกับคุณ</p>
+          </section>
+
+          <section class="quiz-box">
+            <p class="quiz-box__question">คุณมีอายุเท่าไหร่?</p>
+            <button class="quiz-option selected" id="age-a" onclick="App.selectOption('age','age-a')">
+              <span class="quiz-option__check">✅</span> 60–69 ปี
+            </button>
+            <button class="quiz-option" id="age-b" onclick="App.selectOption('age','age-b')">
+              <span class="quiz-option__check">⬜</span> 70–79 ปี
+            </button>
+            <button class="quiz-option" id="age-c" onclick="App.selectOption('age','age-c')">
+              <span class="quiz-option__check">⬜</span> 80 ปีขึ้นไป
+            </button>
+          </section>
+
+          <section class="quiz-box">
+            <p class="quiz-box__question">รายได้ของคุณเป็นแบบใด?</p>
+            <button class="quiz-option" id="income-a" onclick="App.selectOption('income','income-a')">
+              <span class="quiz-option__check">⬜</span> ไม่มีรายได้ประจำ
+            </button>
+            <button class="quiz-option" id="income-b" onclick="App.selectOption('income','income-b')">
+              <span class="quiz-option__check">⬜</span> มีรายได้บ้างเล็กน้อย
+            </button>
+            <button class="quiz-option" id="income-c" onclick="App.selectOption('income','income-c')">
+              <span class="quiz-option__check">⬜</span> มีรายได้ประจำ
+            </button>
+          </section>
+
+          <section class="quiz-box">
+            <p class="quiz-box__question">ตอนนี้คุณอาศัยอยู่แบบใด?</p>
+            <button class="quiz-option" id="status-a" onclick="App.selectOption('status','status-a')">
+              <span class="quiz-option__check">⬜</span> อยู่คนเดียว
+            </button>
+            <button class="quiz-option" id="status-b" onclick="App.selectOption('status','status-b')">
+              <span class="quiz-option__check">⬜</span> อยู่กับครอบครัว
+            </button>
+            <button class="quiz-option" id="status-c" onclick="App.selectOption('status','status-c')">
+              <span class="quiz-option__check">⬜</span> มีผู้ดูแลประจำ
+            </button>
+          </section>
+
+          <section class="result-box" id="rightsResult">
+            กรุณาเลือกข้อมูลให้ครบเพื่อประเมินสิทธิของคุณ
+          </section>
+
+          <section class="result-box">
+            <p class="result-box__title">ตัวอย่างสิทธิที่เกี่ยวข้อง</p>
+            <div class="right-item">
+              <span class="right-item__dot"></span>
+              <span class="right-item__text">เบี้ยยังชีพผู้สูงอายุรายเดือน</span>
+            </div>
+            <div class="right-item">
+              <span class="right-item__dot"></span>
+              <span class="right-item__text">สิทธิรักษาพยาบาลตามบัตรทอง</span>
+            </div>
+            <div class="right-item">
+              <span class="right-item__dot"></span>
+              <span class="right-item__text">บริการช่วยเหลือจากหน่วยงานในพื้นที่</span>
+            </div>
+            <button class="btn-primary btn--full" onclick="App.showScreen('screen-docs')" style="margin-top:12px">
+              📄 ดูเอกสารที่ต้องใช้
+            </button>
+          </section>
+        </main>
+
+        <nav class="nav-bar">
+          <button class="nav-item" onclick="App.showScreen('screen-home')">
+            <span class="nav-item__icon">🏠</span>หน้าหลัก
+          </button>
+          <button class="nav-item active" onclick="App.showScreen('screen-rights')">
+            <span class="nav-item__icon">📋</span>สิทธิ
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-voice')">
+            <span class="nav-item__icon">🎙️</span>พูด
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-volunteer')">
+            <span class="nav-item__icon">🤝</span>อาสา
+          </button>
+        </nav>
+      </section>
+
+      <!-- =========================
+           SCREEN 3: VOICE
+      ========================== -->
+      <section id="screen-voice" class="screen">
+        <div class="status-bar">
+          <span>00:00</span><span>🔋 88%</span>
+        </div>
+
+        <header class="topbar">
+          <button class="topbar__back" onclick="App.showScreen('screen-home')">← กลับ</button>
+          <div class="topbar__title">ถามด้วยเสียง</div>
+        </header>
+
+        <main class="content">
+          <section class="voice-guide-card">
+            <p class="voice-guide-card__title">กดปุ่มไมค์แล้วพูดได้เลย</p>
+            <p class="voice-guide-card__desc">เช่น "ฉันอายุ 65 ปี อยากรู้ว่ามีสิทธิอะไรบ้าง"</p>
+          </section>
+
+          <div class="voice-visual">
+            <div class="mic-circle" id="micBtn" onclick="App.toggleMic()">🎙️</div>
+            <p class="mic-status" id="micStatus">แตะเพื่อพูด</p>
+          </div>
+
+          <div class="transcript-box" id="transcriptBox">
+            <span class="transcript-box__placeholder">
+              ตัวอย่าง: "ฉันอายุ 65 ปี อยากรู้ว่าตัวเองมีสิทธิได้รับเงินอะไรบ้าง"
+            </span>
+          </div>
+
+          <div class="ai-reply" id="voiceAnswer">
+            กรุณากดปุ่มไมค์ แล้วระบบจะช่วยสรุปคำตอบให้คุณ
+          </div>
+
+          <div class="voice-actions">
+            <button id="stopSpeakBtn" class="btn-secondary">⏹ หยุดเสียง</button>
+            <button class="btn-primary" onclick="App.showScreen('screen-volunteer')">🤝 ขอคนช่วย</button>
+          </div>
+        </main>
+
+        <nav class="nav-bar">
+          <button class="nav-item" onclick="App.showScreen('screen-home')">
+            <span class="nav-item__icon">🏠</span>หน้าหลัก
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-rights')">
+            <span class="nav-item__icon">📋</span>สิทธิ
+          </button>
+          <button class="nav-item active" onclick="App.showScreen('screen-voice')">
+            <span class="nav-item__icon">🎙️</span>พูด
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-volunteer')">
+            <span class="nav-item__icon">🤝</span>อาสา
+          </button>
+        </nav>
+      </section>
+
+      <!-- =========================
+           SCREEN 4: VOLUNTEER
+      ========================== -->
+      <section id="screen-volunteer" class="screen">
+        <div class="status-bar">
+          <span>00:00</span><span>🔋 88%</span>
+        </div>
+
+        <header class="topbar">
+          <button class="topbar__back" onclick="App.showScreen('screen-home')">← กลับ</button>
+          <div class="topbar__title">ทีมอาสาช่วยสิทธิ</div>
+        </header>
+
+        <main class="content">
+          <section class="info-card">
+            <p class="info-card__title">มีคนพร้อมช่วยคุณ</p>
+            <p class="info-card__desc">อาสาสมัครสามารถช่วยกรอกเอกสาร นัดหมาย และพาไปรับสิทธิได้</p>
+          </section>
+
+          <div class="vol-card">
+            <div class="vol-card__avatar">👩</div>
+            <div class="vol-card__info">
+              <div class="vol-card__name">คุณสมใจ จันทร์ดี</div>
+              <div class="vol-card__detail">อบต.บางบัวทอง · ว่าง พรุ่งนี้ 09:00 น.</div>
+            </div>
+            <button class="btn-appoint" onclick="App.confirmAppointment()">นัด</button>
+          </div>
+
+          <div class="vol-card">
+            <div class="vol-card__avatar">👨</div>
+            <div class="vol-card__info">
+              <div class="vol-card__name">คุณประเสริฐ มั่นคง</div>
+              <div class="vol-card__detail">รพ.สต.บางรักน้อย · ว่าง วันพุธ</div>
+            </div>
+            <button class="btn-appoint" onclick="App.confirmAppointment()">นัด</button>
+          </div>
+
+          <div class="vol-card">
+            <div class="vol-card__avatar">👩‍⚕️</div>
+            <div class="vol-card__info">
+              <div class="vol-card__name">คุณวิภา สุขสม</div>
+              <div class="vol-card__detail">ศูนย์ผู้สูงอายุ · ว่าง วันศุกร์</div>
+            </div>
+            <button class="btn-appoint" onclick="App.confirmAppointment()">นัด</button>
+          </div>
+
+          <div class="confirm-msg" id="confirmMsg">
+            ✅ นัดหมายสำเร็จแล้ว เจ้าหน้าที่จะติดต่อกลับโดยเร็ว
+          </div>
+        </main>
+
+        <nav class="nav-bar">
+          <button class="nav-item" onclick="App.showScreen('screen-home')">
+            <span class="nav-item__icon">🏠</span>หน้าหลัก
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-rights')">
+            <span class="nav-item__icon">📋</span>สิทธิ
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-voice')">
+            <span class="nav-item__icon">🎙️</span>พูด
+          </button>
+          <button class="nav-item active" onclick="App.showScreen('screen-volunteer')">
+            <span class="nav-item__icon">🤝</span>อาสา
+          </button>
+        </nav>
+      </section>
+
+      <!-- =========================
+           SCREEN 5: DOCS
+      ========================== -->
+      <section id="screen-docs" class="screen">
+        <div class="status-bar">
+          <span>00:00</span><span>🔋 88%</span>
+        </div>
+
+        <header class="topbar">
+          <button class="topbar__back" onclick="App.showScreen('screen-home')">← กลับ</button>
+          <div class="topbar__title">เอกสารที่ต้องใช้</div>
+        </header>
+
+        <main class="content">
+          <section class="info-card">
+            <p class="info-card__title">เช็กก่อนออกจากบ้าน</p>
+            <p class="info-card__desc">เมื่อเตรียมครบแล้ว จะช่วยให้ติดต่อรับสิทธิได้ง่ายขึ้น</p>
+          </section>
+
+          <section class="checklist-card">
+            <label class="checklist-item">
+              <input type="checkbox" checked />
+              <span>บัตรประชาชนตัวจริง</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" />
+              <span>ทะเบียนบ้าน</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" />
+              <span>สมุดบัญชีธนาคาร</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" />
+              <span>บัตรนัด / เอกสารจากหน่วยงาน</span>
+            </label>
+            <label class="checklist-item">
+              <input type="checkbox" />
+              <span>ใบมอบอำนาจ (ถ้ามีผู้ไปแทน)</span>
+            </label>
+          </section>
+
+          <section class="result-box">
+            <p class="result-box__title">คำแนะนำ</p>
+            <div class="right-item">
+              <span class="right-item__dot"></span>
+              <span class="right-item__text">หากเอกสารไม่ครบ ให้กด "ขอคนช่วย" เพื่อให้อาสาช่วยตรวจสอบ</span>
+            </div>
+            <div class="right-item">
+              <span class="right-item__dot"></span>
+              <span class="right-item__text">ถ่ายรูปเอกสารเก็บไว้ในโทรศัพท์ได้ จะสะดวกเวลาใช้งาน</span>
+            </div>
+          </section>
+
+          <button class="btn-primary" onclick="App.showScreen('screen-steps')">
+            🪜 ดูขั้นตอนต่อไป
+          </button>
+        </main>
+
+        <!-- nav-bar เพิ่มใหม่ (เดิมไม่มี — ทำให้ผู้ใช้ติดอยู่ในหน้านี้) -->
+        <nav class="nav-bar">
+          <button class="nav-item" onclick="App.showScreen('screen-home')">
+            <span class="nav-item__icon">🏠</span>หน้าหลัก
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-rights')">
+            <span class="nav-item__icon">📋</span>สิทธิ
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-voice')">
+            <span class="nav-item__icon">🎙️</span>พูด
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-volunteer')">
+            <span class="nav-item__icon">🤝</span>อาสา
+          </button>
+        </nav>
+      </section>
+
+      <!-- =========================
+           SCREEN 6: STEPS
+      ========================== -->
+      <section id="screen-steps" class="screen">
+        <div class="status-bar">
+          <span>00:00</span><span>🔋 88%</span>
+        </div>
+
+        <header class="topbar">
+          <button class="topbar__back" onclick="App.showScreen('screen-home')">← กลับ</button>
+          <div class="topbar__title">ขั้นตอนการรับสิทธิ</div>
+        </header>
+
+        <main class="content">
+          <section class="info-card">
+            <p class="info-card__title">ทำตามทีละขั้น</p>
+            <p class="info-card__desc">ออกแบบให้เข้าใจง่าย เหมาะกับผู้สูงอายุและผู้ดูแล</p>
+          </section>
+
+          <div class="step-card">
+            <div class="step-card__num">1</div>
+            <div class="step-card__text">
+              <div class="step-card__title">เช็กสิทธิของตัวเอง</div>
+              <div class="step-card__desc">ตอบคำถามสั้น ๆ เพื่อประเมินสิทธิที่เกี่ยวข้อง</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-card__num">2</div>
+            <div class="step-card__text">
+              <div class="step-card__title">เตรียมเอกสาร</div>
+              <div class="step-card__desc">เตรียมบัตรประชาชน ทะเบียนบ้าน และสมุดบัญชี</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-card__num">3</div>
+            <div class="step-card__text">
+              <div class="step-card__title">ไปตามวันนัด</div>
+              <div class="step-card__desc">ไปที่ อบต. หรือหน่วยบริการตามเวลาที่นัดหมาย</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-card__num">4</div>
+            <div class="step-card__text">
+              <div class="step-card__title">ขอความช่วยเหลือเมื่อจำเป็น</div>
+              <div class="step-card__desc">หากไม่สะดวกเดินทางหรือกรอกเอกสาร ให้กดขออาสา</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="App.showScreen('screen-volunteer')">
+            🤝 ขออาสาช่วยดำเนินการ
+          </button>
+        </main>
+
+        <!-- nav-bar เพิ่มใหม่ (เดิมไม่มี — ทำให้ผู้ใช้ติดอยู่ในหน้านี้) -->
+        <nav class="nav-bar">
+          <button class="nav-item" onclick="App.showScreen('screen-home')">
+            <span class="nav-item__icon">🏠</span>หน้าหลัก
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-rights')">
+            <span class="nav-item__icon">📋</span>สิทธิ
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-voice')">
+            <span class="nav-item__icon">🎙️</span>พูด
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-volunteer')">
+            <span class="nav-item__icon">🤝</span>อาสา
+          </button>
+        </nav>
+      </section>
+
+      <!-- =========================
+           SCREEN 7: APPOINTMENTS
+      ========================== -->
+      <section id="screen-appointments" class="screen">
+        <div class="status-bar">
+          <span>00:00</span><span>🔋 88%</span>
+        </div>
+
+        <header class="topbar">
+          <button class="topbar__back" onclick="App.showScreen('screen-home')">← กลับ</button>
+          <div class="topbar__title">นัดหมายของฉัน</div>
+        </header>
+
+        <main class="content">
+          <div class="schedule-card">
+            <div class="schedule-card__date">พรุ่งนี้</div>
+            <div class="schedule-card__title">รับเบี้ยยังชีพผู้สูงอายุ</div>
+            <div class="schedule-card__desc">อบต.บางบัวทอง เวลา 09:00 น.</div>
+          </div>
+
+          <div class="schedule-card">
+            <div class="schedule-card__date">วันพุธ</div>
+            <div class="schedule-card__title">อาสาเข้าช่วยตรวจเอกสาร</div>
+            <div class="schedule-card__desc">คุณสมใจ จันทร์ดี เวลา 10:30 น.</div>
+          </div>
+
+          <div class="schedule-card">
+            <div class="schedule-card__date">สัปดาห์หน้า</div>
+            <div class="schedule-card__title">ตรวจสุขภาพตามสิทธิ</div>
+            <div class="schedule-card__desc">รพ.สต.บางรักน้อย เวลา 08:30 น.</div>
+          </div>
+
+          <div class="quick-help-card">
+            <div class="quick-help-card__title">เคล็ดลับ</div>
+            <div class="quick-help-card__desc">
+              ควรเตรียมเอกสารไว้ล่วงหน้า 1 วัน และให้ลูกหลานช่วยตรวจสอบอีกครั้ง
+            </div>
+          </div>
+        </main>
+
+        <nav class="nav-bar">
+          <button class="nav-item" onclick="App.showScreen('screen-home')">
+            <span class="nav-item__icon">🏠</span>หน้าหลัก
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-rights')">
+            <span class="nav-item__icon">📋</span>สิทธิ
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-voice')">
+            <span class="nav-item__icon">🎙️</span>พูด
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-volunteer')">
+            <span class="nav-item__icon">🤝</span>อาสา
+          </button>
+        </nav>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
