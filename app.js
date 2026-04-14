@@ -110,6 +110,30 @@ const App = (() => {
     });
   }
 
+  // ==== QUIZ VIEW TOGGLE ====
+  function openQuiz() {
+    const main = document.getElementById('view-rights-main');
+    const quiz = document.getElementById('view-rights-quiz');
+    if (main && quiz) {
+      main.style.display = 'none';
+      quiz.style.display = 'block';
+      const content = document.querySelector("#screen-rights .content");
+      if (content) content.scrollTop = 0;
+    }
+  }
+
+  function closeQuiz() {
+    const main = document.getElementById('view-rights-main');
+    const quiz = document.getElementById('view-rights-quiz');
+    if (main && quiz) {
+      quiz.style.display = 'none';
+      main.style.display = 'block';
+      const content = document.querySelector("#screen-rights .content");
+      if (content) content.scrollTop = 0;
+    }
+  }
+  // ==========================
+
   function selectOption(groupName, selectedId) {
     document.querySelectorAll(`[id^="${groupName}-"]`).forEach((btn) => {
       const isSel = btn.id === selectedId;
@@ -166,6 +190,7 @@ const App = (() => {
     const rightsDocsList = document.getElementById("rightsDocsList");
     const rightsDocsCount = document.getElementById("rightsDocsCount");
     const statRights = document.getElementById("statRights");
+    const startQuizBtn = document.getElementById("startQuizBtn");
 
     if (!resultBox) return;
 
@@ -177,24 +202,25 @@ const App = (() => {
     updateQuizProgress(answered);
 
     if (answered < 3) {
-      resultBox.textContent = "กรุณาเลือกข้อมูลให้ครบเพื่อประเมินสิทธิของคุณ";
+      if (startQuizBtn) startQuizBtn.innerHTML = "📋 เริ่มประเมินสิทธิ";
+      resultBox.textContent = "กดปุ่ม 'เริ่มประเมินสิทธิ' ด้านบน เพื่อวิเคราะห์สิทธิที่คุณอาจได้รับ";
 
       if (rightsList) {
-        rightsList.innerHTML =
-          `<div class="rights-empty">กรุณาตอบคำถามให้ครบก่อน ระบบจะแยกสิทธิให้เป็นข้อ ๆ</div>`;
+        rightsList.innerHTML = `<div class="rights-empty">กรุณาทำแบบประเมินให้ครบก่อน</div>`;
       }
       if (rightsTags) {
         rightsTags.innerHTML = `<span class="rights-tag">ยังไม่มีข้อมูลเพียงพอ</span>`;
       }
       if (rightsScore) rightsScore.textContent = "รอประเมิน";
       if (rightsDocsList) {
-        rightsDocsList.innerHTML =
-          `<div class="rights-empty">ระบบจะแนะนำเอกสารหลังประเมินสิทธิ</div>`;
+        rightsDocsList.innerHTML = `<div class="rights-empty">ระบบจะแนะนำเอกสารหลังประเมินสิทธิ</div>`;
       }
       if (rightsDocsCount) rightsDocsCount.textContent = "0 รายการ";
       if (statRights) statRights.textContent = "0";
       return;
     }
+
+    if (startQuizBtn) startQuizBtn.innerHTML = "✏️ แก้ไขข้อมูลประเมิน";
 
     let ageText = "";
     let incomeText = "";
@@ -213,7 +239,7 @@ const App = (() => {
     if (status === "status-c") statusText = "มีผู้ดูแลประจำ";
 
     resultBox.textContent =
-      `จากข้อมูลเบื้องต้น (${ageText}, ${incomeText}, ${statusText}) ระบบประเมินว่าคุณอาจมีสิทธิสำคัญหลายรายการ และควรเตรียมเอกสารไว้ล่วงหน้าเพื่อให้ติดต่อได้สะดวกขึ้น`;
+      `ข้อมูลของคุณ: ${ageText}, ${incomeText}, ${statusText} — ระบบวิเคราะห์สิทธิเบื้องต้นได้ดังนี้`;
 
     const rights = [];
     const docs = [
@@ -712,7 +738,6 @@ const App = (() => {
     restoreSettings();
     restoreQuiz();
 
-    // Fix: Dynamically determine which screen to load based on the HTML file
     const activeScreenEl = document.querySelector('.screen');
     const startScreenId = activeScreenEl ? activeScreenEl.id : 'screen-home';
     showScreen(startScreenId);
@@ -742,6 +767,8 @@ const App = (() => {
 
   return {
     showScreen,
+    openQuiz,       // Expose new functions
+    closeQuiz,      // Expose new functions
     selectOption,
     toggleMic,
     confirmAppointment,
