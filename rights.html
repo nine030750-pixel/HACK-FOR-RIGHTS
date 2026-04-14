@@ -3,16 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>เช็กสิทธิของฉัน — สิทธิถึงบ้าน</title>
+  <title>แผนสิทธิของฉัน — สิทธิถึงบ้าน</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="phone-outer">
     <div class="phone">
 
-      <!-- ══════════════════════════════
-           SCREEN 2: RIGHTS
-      ══════════════════════════════ -->
       <section id="screen-rights" class="screen active">
         <div class="status-bar">
           <span>00:00</span>
@@ -21,128 +18,192 @@
 
         <header class="topbar">
           <button class="topbar__back" onclick="App.showScreen('screen-home')">← กลับ</button>
-          <div class="topbar__title">เช็กสิทธิของฉัน</div>
-          <button onclick="App.showScreen('screen-settings')" style="background:none;border:none;cursor:pointer;font-size:1.5rem;line-height:1;padding:4px 6px;margin-left:auto;" aria-label="ตั้งค่า" title="ตั้งค่า">⚙️</button>
+          <div class="topbar__title" style="font-size:1.45rem;">แผนสิทธิของฉัน</div>
+          <button onclick="App.openSettings()" style="background:none;border:none;cursor:pointer;font-size:1.5rem;line-height:1;padding:4px 6px;margin-left:auto;" aria-label="ตั้งค่า" title="ตั้งค่า">⚙️</button>
         </header>
 
-        <main class="content">
-          <section class="info-card">
-            <p class="info-card__title">ตอบคำถามสั้น ๆ</p>
-            <p class="info-card__desc">เพื่อช่วยประเมินสิทธิที่เหมาะกับคุณ</p>
-          </section>
+        <main class="content" style="position: relative; overflow-x: hidden;">
 
-          <div class="quiz-progress">
-            <div class="quiz-progress__label" id="quizProgressLabel">ตอบแล้ว 0 / 3 ข้อ</div>
-            <div class="progress-track">
-              <div class="progress-fill" id="quizProgressFill" style="width:0%"></div>
-            </div>
-          </div>
-
-          <section class="quiz-box">
-            <p class="quiz-box__question">คุณมีอายุเท่าไหร่?</p>
-            <button class="quiz-option selected" id="age-a" onclick="App.selectOption('age','age-a')">
-              <span class="quiz-option__check">✅</span> 60–69 ปี
-            </button>
-            <button class="quiz-option" id="age-b" onclick="App.selectOption('age','age-b')">
-              <span class="quiz-option__check">⬜</span> 70–79 ปี
-            </button>
-            <button class="quiz-option" id="age-c" onclick="App.selectOption('age','age-c')">
-              <span class="quiz-option__check">⬜</span> 80 ปีขึ้นไป
-            </button>
-          </section>
-
-          <section class="quiz-box">
-            <p class="quiz-box__question">รายได้ของคุณเป็นแบบใด?</p>
-            <button class="quiz-option" id="income-a" onclick="App.selectOption('income','income-a')">
-              <span class="quiz-option__check">⬜</span> ไม่มีรายได้ประจำ
-            </button>
-            <button class="quiz-option" id="income-b" onclick="App.selectOption('income','income-b')">
-              <span class="quiz-option__check">⬜</span> มีรายได้บ้างเล็กน้อย
-            </button>
-            <button class="quiz-option" id="income-c" onclick="App.selectOption('income','income-c')">
-              <span class="quiz-option__check">⬜</span> มีรายได้ประจำ
-            </button>
-          </section>
-
-          <section class="quiz-box">
-            <p class="quiz-box__question">ตอนนี้คุณอาศัยอยู่แบบใด?</p>
-            <button class="quiz-option" id="status-a" onclick="App.selectOption('status','status-a')">
-              <span class="quiz-option__check">⬜</span> อยู่คนเดียว
-            </button>
-            <button class="quiz-option" id="status-b" onclick="App.selectOption('status','status-b')">
-              <span class="quiz-option__check">⬜</span> อยู่กับครอบครัว
-            </button>
-            <button class="quiz-option" id="status-c" onclick="App.selectOption('status','status-c')">
-              <span class="quiz-option__check">⬜</span> มีผู้ดูแลประจำ
-            </button>
-          </section>
-
-          <section class="result-box" id="rightsResult">
-            กรุณาเลือกข้อมูลให้ครบเพื่อประเมินสิทธิของคุณ
-          </section>
-
-          <!-- เพิ่มใหม่: แยกสิทธิแบบเป็นข้อ -->
-          <section class="rights-detail-card" id="rightsDetailCard">
-            <div class="rights-detail-card__head">
-              <div>
-                <p class="rights-detail-card__eyebrow">สรุปผลแบบละเอียด</p>
-                <h3 class="rights-detail-card__title">สิทธิที่คุณอาจได้รับ</h3>
+          <div id="view-rights-dashboard" style="display:block; animation: slideIn 0.3s ease;">
+            
+            <div class="stats-row" style="margin-top: 10px;">
+              <div class="stat-card">
+                <div class="stat-card__value" id="dashboardRightsCount" style="color:var(--primary);">0</div>
+                <div class="stat-card__label">สิทธิ์ที่ได้รับ</div>
               </div>
-              <div class="rights-score" id="rightsScore">รอประเมิน</div>
+              <div class="stat-card">
+                <div class="stat-card__value" style="color:#16a34a;">0</div>
+                <div class="stat-card__label">พร้อมใช้งาน</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card__value" style="color:#f59e0b;">0</div>
+                <div class="stat-card__label">ใช้ไปแล้ว</div>
+              </div>
             </div>
 
-            <div class="rights-list" id="rightsList">
-              <div class="rights-empty">กรุณาตอบคำถามให้ครบก่อน ระบบจะแยกสิทธิให้เป็นข้อ ๆ</div>
+            <div class="reminder-card" style="background: linear-gradient(180deg, #fff3e0 0%, #ffe0b2 100%); border-color: #ffb74d;">
+              <span class="reminder-card__icon">🔔</span>
+              <div class="reminder-card__text">
+                <div class="reminder-card__title" style="color: #d84315;">ระบบแจ้งเตือนสิทธิ</div>
+                <div class="reminder-card__sub" style="color: #ef6c00;">
+                  กรุณาประเมินสิทธิของคุณเพื่อรับการแจ้งเตือนที่แม่นยำ
+                </div>
+              </div>
             </div>
 
-            <div class="rights-tags" id="rightsTags">
-              <span class="rights-tag">ยังไม่มีข้อมูลเพียงพอ</span>
-            </div>
-          </section>
+            <p class="section-label" style="text-align: center; font-size: 1.1rem; margin-top: 24px;">วันนี้คุณต้องการทำอะไร?</p>
 
-          <!-- เพิ่มใหม่: เอกสารที่ควรเตรียม -->
-          <section class="rights-docs-card" id="rightsDocsCard">
-            <div class="rights-docs-card__head">
-              <h3 class="rights-docs-card__title">เอกสารที่ควรเตรียม</h3>
-              <span class="rights-docs-card__badge" id="rightsDocsCount">0 รายการ</span>
+            <div class="main-grid" style="grid-template-columns: 1fr; gap: 12px;">
+              <button class="contact-card" onclick="App.showRightsList()" style="min-height: 80px;">
+                <div class="contact-card__icon-wrap" style="background: #eef2ff; color: #4f46e5;">
+                  <span class="contact-card__icon">📋</span>
+                </div>
+                <div class="contact-card__content" style="text-align: left;">
+                  <div class="contact-card__title">ดูสิทธิที่ได้รับ</div>
+                  <div class="contact-card__desc">แบบประเมิน รายการสิทธิทั้งหมด และเอกสารที่ต้องใช้</div>
+                </div>
+                <span class="contact-card__arrow">→</span>
+              </button>
+
+              <button class="contact-card" onclick="App.showToast('กำลังพัฒนาระบบตรวจสอบสถานะ...')" style="min-height: 80px;">
+                <div class="contact-card__icon-wrap" style="background: #e8f5e9; color: #16a34a;">
+                  <span class="contact-card__icon">🔍</span>
+                </div>
+                <div class="contact-card__content" style="text-align: left;">
+                  <div class="contact-card__title">ตรวจสอบสถานะสิทธิ</div>
+                  <div class="contact-card__desc">เช็กสถานะ ใช้ได้ / หมดอายุ / ดูรายละเอียดประกันต่างๆ</div>
+                </div>
+                <span class="contact-card__arrow">→</span>
+              </button>
+
+              <button class="contact-card" onclick="App.showToast('กำลังพัฒนาระบบ AI วางแผนสิทธิ...')" style="min-height: 80px;">
+                <div class="contact-card__icon-wrap" style="background: #fff0f6; color: #db2777;">
+                  <span class="contact-card__icon">💡</span>
+                </div>
+                <div class="contact-card__content" style="text-align: left;">
+                  <div class="contact-card__title">วางแผนสิทธิ (AI)</div>
+                  <div class="contact-card__desc">ลำดับการใช้สิทธิ & คำแนะนำจาก AI เพื่อใช้ให้คุ้มค่า</div>
+                </div>
+                <span class="contact-card__arrow">→</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="view-rights-main" style="display:none; animation: slideIn 0.3s ease;">
+            <div style="display:flex; align-items:center; margin-bottom: 16px; gap: 14px;">
+              <button class="topbar__back" onclick="App.backToRightsDashboard()">← กลับหน้าแผนสิทธิ</button>
             </div>
 
-            <div class="rights-docs-list" id="rightsDocsList">
-              <div class="rights-empty">ระบบจะแนะนำเอกสารหลังประเมินสิทธิ</div>
-            </div>
-          </section>
+            <section class="info-card" style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px; padding: 24px 18px;">
+              <div>
+                <p class="info-card__title" style="font-size: 1.35rem;">สิทธิประโยชน์ของคุณ</p>
+                <p class="info-card__desc">ทำแบบประเมินเพื่อวิเคราะห์สิทธิที่คุณอาจได้รับ</p>
+              </div>
+              <button id="startQuizBtn" class="btn-primary" onclick="App.openQuiz()" style="width: 100%; max-width: 280px; min-height: 56px; border-radius: 18px;">
+                📋 เริ่มประเมินสิทธิ
+              </button>
+            </section>
 
-          <div class="rights-action-row">
-            <button class="btn-secondary rights-action-btn" onclick="App.speakTextFromElement('rightsDetailCard')">
-              🔊 อ่านผลให้ฟัง
-            </button>
-            <button class="btn-secondary rights-action-btn" onclick="App.showScreen('screen-docs')">
-              📄 ไปหน้าเอกสาร
+            <section class="result-box" id="rightsResult">
+              กรุณากดปุ่มเพื่อเริ่มประเมินสิทธิ
+            </section>
+
+            <section class="rights-detail-card" id="rightsDetailCard">
+              <div class="rights-detail-card__head">
+                <div>
+                  <p class="rights-detail-card__eyebrow">สรุปผลแบบละเอียด</p>
+                  <h3 class="rights-detail-card__title">สิทธิที่คุณอาจได้รับ</h3>
+                </div>
+                <div class="rights-score" id="rightsScore">รอประเมิน</div>
+              </div>
+
+              <div class="rights-list" id="rightsList">
+                <div class="rights-empty">กรุณาทำแบบประเมินเพื่อดูสิทธิที่นี่</div>
+              </div>
+
+              <div class="rights-tags" id="rightsTags">
+                <span class="rights-tag">ยังไม่มีข้อมูลเพียงพอ</span>
+              </div>
+            </section>
+
+            <section class="rights-docs-card" id="rightsDocsCard">
+              <div class="rights-docs-card__head">
+                <h3 class="rights-docs-card__title">เอกสารที่ควรเตรียม</h3>
+                <span class="rights-docs-card__badge" id="rightsDocsCount">0 รายการ</span>
+              </div>
+
+              <div class="rights-docs-list" id="rightsDocsList">
+                <div class="rights-empty">ระบบจะแนะนำเอกสารหลังประเมินสิทธิ</div>
+              </div>
+            </section>
+
+            <div class="rights-action-row">
+              <button class="btn-secondary rights-action-btn" onclick="App.speakTextFromElement('rightsDetailCard')">
+                🔊 อ่านผลให้ฟัง
+              </button>
+              <button class="btn-secondary rights-action-btn" onclick="App.showScreen('screen-docs')">
+                📄 ไปหน้าเอกสาร
+              </button>
+            </div>
+          </div>
+
+          <div id="view-rights-quiz" style="display:none; animation: slideIn 0.3s ease;">
+            <div style="display:flex; align-items:center; margin-bottom: 20px; gap: 14px;">
+              <button class="topbar__back" onclick="App.closeQuiz()">← กลับ</button>
+              <h2 style="font-size: 1.35rem; font-weight:900; color:var(--text);">แบบประเมินสิทธิ</h2>
+            </div>
+
+            <div class="quiz-progress">
+              <div class="quiz-progress__label" id="quizProgressLabel">ตอบแล้ว 0 / 3 ข้อ</div>
+              <div class="progress-track">
+                <div class="progress-fill" id="quizProgressFill" style="width:0%"></div>
+              </div>
+            </div>
+
+            <section class="quiz-box">
+              <p class="quiz-box__question">คุณมีอายุเท่าไหร่?</p>
+              <button class="quiz-option" id="age-a" onclick="App.selectOption('age','age-a')">
+                <span class="quiz-option__check">⬜</span> 60–69 ปี
+              </button>
+              <button class="quiz-option" id="age-b" onclick="App.selectOption('age','age-b')">
+                <span class="quiz-option__check">⬜</span> 70–79 ปี
+              </button>
+              <button class="quiz-option" id="age-c" onclick="App.selectOption('age','age-c')">
+                <span class="quiz-option__check">⬜</span> 80 ปีขึ้นไป
+              </button>
+            </section>
+
+            <section class="quiz-box">
+              <p class="quiz-box__question">รายได้ของคุณเป็นแบบใด?</p>
+              <button class="quiz-option" id="income-a" onclick="App.selectOption('income','income-a')">
+                <span class="quiz-option__check">⬜</span> ไม่มีรายได้ประจำ
+              </button>
+              <button class="quiz-option" id="income-b" onclick="App.selectOption('income','income-b')">
+                <span class="quiz-option__check">⬜</span> มีรายได้บ้างเล็กน้อย
+              </button>
+              <button class="quiz-option" id="income-c" onclick="App.selectOption('income','income-c')">
+                <span class="quiz-option__check">⬜</span> มีรายได้ประจำ
+              </button>
+            </section>
+
+            <section class="quiz-box">
+              <p class="quiz-box__question">ตอนนี้คุณอาศัยอยู่แบบใด?</p>
+              <button class="quiz-option" id="status-a" onclick="App.selectOption('status','status-a')">
+                <span class="quiz-option__check">⬜</span> อยู่คนเดียว
+              </button>
+              <button class="quiz-option" id="status-b" onclick="App.selectOption('status','status-b')">
+                <span class="quiz-option__check">⬜</span> อยู่กับครอบครัว
+              </button>
+              <button class="quiz-option" id="status-c" onclick="App.selectOption('status','status-c')">
+                <span class="quiz-option__check">⬜</span> มีผู้ดูแลประจำ
+              </button>
+            </section>
+
+            <button class="btn-primary" onclick="App.closeQuiz()" style="margin-top:10px; margin-bottom:20px;">
+              ✅ บันทึกและดูผล
             </button>
           </div>
 
-          <section class="result-box">
-            <p class="result-box__title">ตัวอย่างสิทธิที่เกี่ยวข้อง</p>
-
-            <div class="right-item">
-              <span class="right-item__dot"></span>
-              <span class="right-item__text">เบี้ยยังชีพผู้สูงอายุรายเดือน</span>
-            </div>
-
-            <div class="right-item">
-              <span class="right-item__dot"></span>
-              <span class="right-item__text">สิทธิรักษาพยาบาลตามบัตรทอง</span>
-            </div>
-
-            <div class="right-item">
-              <span class="right-item__dot"></span>
-              <span class="right-item__text">บริการช่วยเหลือจากหน่วยงานในพื้นที่</span>
-            </div>
-
-            <button class="btn-primary" onclick="App.showScreen('screen-docs')" style="margin-top:12px">
-              📄 ดูเอกสารที่ต้องใช้
-            </button>
-          </section>
         </main>
 
         <nav class="nav-bar">
@@ -161,12 +222,14 @@
         </nav>
       </section>
 
+      <div id="settingsOverlay" class="settings-overlay" onclick="App.closeSettings()"></div>
+      <div id="settingsPanel" class="settings-panel" aria-hidden="true"></div>
+
     </div>
   </div>
 
   <script src="app.js"></script>
   <script>
-    // Page-navigation bridge — routes showScreen() calls to their own HTML file
     const _originalShowScreen = App.showScreen;
     const pageMap = {
       'screen-home':        'index.html',
