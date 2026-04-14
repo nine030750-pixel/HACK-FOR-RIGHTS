@@ -712,7 +712,11 @@ const App = (() => {
     restoreSettings();
     restoreQuiz();
 
-    showScreen("screen-home");
+    // Fix: Dynamically determine which screen to load based on the HTML file
+    const activeScreenEl = document.querySelector('.screen');
+    const startScreenId = activeScreenEl ? activeScreenEl.id : 'screen-home';
+    showScreen(startScreenId);
+    
     syncNav(state.currentScreen);
 
     const savedAppoints = load("appointments", []);
