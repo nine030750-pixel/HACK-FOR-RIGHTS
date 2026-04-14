@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ทีมอาสาช่วยสิทธิ — สิทธิถึงบ้าน</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="phone-outer">
+    <div class="phone">
+
+      <!-- ══════════════════════════════
+           SCREEN 4: VOLUNTEER
+      ══════════════════════════════ -->
+      <section id="screen-volunteer" class="screen active">
+        <div class="status-bar">
+          <span>00:00</span>
+          <span>🔋 88%</span>
+        </div>
+
+        <header class="topbar">
+          <button class="topbar__back" onclick="App.showScreen('screen-home')">← กลับ</button>
+          <div class="topbar__title">ทีมอาสาช่วยสิทธิ</div>
+          <button onclick="App.showScreen('screen-settings')" style="background:none;border:none;cursor:pointer;font-size:1.5rem;line-height:1;padding:4px 6px;margin-left:auto;" aria-label="ตั้งค่า" title="ตั้งค่า">⚙️</button>
+        </header>
+
+        <main class="content">
+          <section class="info-card">
+            <p class="info-card__title">มีคนพร้อมช่วยคุณ</p>
+            <p class="info-card__desc">อาสาสมัครสามารถช่วยกรอกเอกสาร นัดหมาย และพาไปรับสิทธิได้</p>
+          </section>
+
+          <div class="vol-card">
+            <div class="vol-card__avatar">👩</div>
+            <div class="vol-card__info">
+              <div class="vol-card__name">คุณสมใจ จันทร์ดี</div>
+              <div class="vol-card__detail">อบต.บางบัวทอง</div>
+              <div class="vol-card__badge">ว่าง พรุ่งนี้ 09:00 น.</div>
+            </div>
+            <button class="btn-appoint" onclick="App.confirmAppointment('คุณสมใจ')">นัด</button>
+          </div>
+
+          <div class="vol-card">
+            <div class="vol-card__avatar">👨</div>
+            <div class="vol-card__info">
+              <div class="vol-card__name">คุณประเสริฐ มั่นคง</div>
+              <div class="vol-card__detail">รพ.สต.บางรักน้อย</div>
+              <div class="vol-card__badge">ว่าง วันพุธ</div>
+            </div>
+            <button class="btn-appoint" onclick="App.confirmAppointment('คุณประเสริฐ')">นัด</button>
+          </div>
+
+          <div class="vol-card">
+            <div class="vol-card__avatar">👩‍⚕️</div>
+            <div class="vol-card__info">
+              <div class="vol-card__name">คุณวิภา สุขสม</div>
+              <div class="vol-card__detail">ศูนย์ผู้สูงอายุ</div>
+              <div class="vol-card__badge">ว่าง วันศุกร์</div>
+            </div>
+            <button class="btn-appoint" onclick="App.confirmAppointment('คุณวิภา')">นัด</button>
+          </div>
+
+          <div class="confirm-msg" id="confirmMsg">✅ นัดหมายสำเร็จแล้ว เจ้าหน้าที่จะติดต่อกลับโดยเร็ว</div>
+        </main>
+
+        <nav class="nav-bar">
+          <button class="nav-item" onclick="App.showScreen('screen-home')">
+            <span class="nav-item__icon">🏠</span>หน้าหลัก
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-rights')">
+            <span class="nav-item__icon">📋</span>สิทธิ
+          </button>
+          <button class="nav-item" onclick="App.showScreen('screen-voice')">
+            <span class="nav-item__icon">🎙️</span>พูด
+          </button>
+          <button class="nav-item active" onclick="App.showScreen('screen-volunteer')">
+            <span class="nav-item__icon">🤝</span>อาสา
+          </button>
+        </nav>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Page-navigation bridge — routes showScreen() calls to their own HTML file
+    const _originalShowScreen = App.showScreen;
+    const pageMap = {
+      'screen-home':        'index.html',
+      'screen-rights':      'rights.html',
+      'screen-voice':       'voice.html',
+      'screen-volunteer':   'volunteer.html',
+      'screen-docs':        'docs.html',
+      'screen-steps':       'steps.html',
+      'screen-appointments':'appointments.html',
+      'screen-settings':    'settings.html'
+    };
+    App.showScreen = function(screenId) {
+      const page = pageMap[screenId];
+      if (page && !document.getElementById(screenId)) {
+        window.location.href = page;
+      } else {
+        _originalShowScreen(screenId);
+      }
+    };
+  </script>
+</body>
+</html>
