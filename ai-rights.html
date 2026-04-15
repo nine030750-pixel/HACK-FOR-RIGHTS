@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI ที่ปรึกษาสิทธิ — สิทธิถึงบ้าน</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ════ CHAT LAYOUT ════ */
+    .chat-content {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 14px 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: linear-gradient(180deg, #f7f8ff 0%, #f2f3fa 100%);
+    }
+    .chat-content::-webkit-scrollbar { width: 4px; }
+    .chat-content::-webkit-scrollbar-thumb { background: #d9ddea; border-radius: 999px; }
+
+    /* ════ BUBBLES ════ */
+    .bubble-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      animation: fadeUp .3s cubic-bezier(.4,0,.2,1) both;
+    }
+    .bubble-row--ai  { justify-content: flex-start; }
+    .bubble-row--user { justify-content: flex-end; }
+
+    .ai-avatar {
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(79,70,229,.25);
+      align-self: flex-end;
+    }
+
+    .bubble {
+      max-width: 78%;
+      padding: 12px 15px;
+      border-radius: 20px;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--text);
+    }
+    .bubble--ai {
+      background: var(--surface);
+      border-bottom-left-radius: 6px;
+      box-shadow: 0 3px 12px rgba(20,25,40,.07);
+    }
+    .bubble--user {
+      background: linear-gradient(135deg, #4f46e5, #6d5efc);
+      color: #fff;
+      border-bottom-right-radius: 6px;
+      box-shadow: 0 3px 12px rgba(79,70,229,.28);
+    }
+
+    /* ════ CHOICE CHIPS ════ */
+    .choices-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 10px;
+      animation: fadeUp .35s cubic-bezier(.4,0,.2,1) both;
+    }
+    .choice-chip {
+      width: 100%;
+      padding: 11px 16px;
+      border-radius: 14px;
+      border: 1.5px solid #dde3ff;
+      background: #fff;
+      color: #4f46e5;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+      transition: all .15s;
+      box-shadow: 0 2px 8px rgba(79,70,229,.07);
+    }
+    .choice-chip:hover {
+      background: #eef2ff;
+      border-color: #4f46e5;
+      transform: translateX(3px);
+    }
+    .choice-chip:active { transform: scale(0.97); }
+    .choice-chip.used {
+      opacity: .45;
+      pointer-events: none;
+      transform: none;
+    }
+
+    /* ════ TYPING INDICATOR ════ */
+    .typing-row { align-items: flex-end; }
+    .typing-dots {
+      display: flex; gap: 5px; padding: 13px 16px;
+      background: var(--surface);
+      border-radius: 20px;
+      border-bottom-left-radius: 6px;
+      box-shadow: 0 3px 12px rgba(20,25,40,.07);
+    }
+    .typing-dots span {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #a5b4fc;
+      animation: bounce 1.2s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: .2s; }
+    .typing-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: .5; }
+      40%            { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* ════ RIGHTS SUMMARY CARD ════ */
+    .rights-summary-card {
+      background: linear-gradient(135deg, #eef2ff, #f3f0ff);
+      border: 1.5px solid #dde3ff;
+      border-radius: 18px;
+      padding: 14px 15px;
+      margin-top: 4px;
+    }
+    .rights-summary-card__title {
+      font-size: 1rem;
+      font-weight: 900;
+      color: #4338ca;
+      margin-bottom: 10px;
+    }
+    .rights-summary-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(79,70,229,.1);
+    }
+    .rights-summary-item:last-child { border-bottom: none; }
+    .rights-summary-item__icon {
+      width: 30px; height: 30px; flex-shrink: 0;
+      background: white;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem;
+      box-shadow: 0 2px 6px rgba(79,70,229,.12);
+    }
+    .rights-summary-item__text { font-size: .93rem; line-height: 1.45; color: #374151; }
+    .rights-summary-item__title { font-weight: 900; color: #1e1b4b; margin-bottom: 2px; }
+
+    /* ════ INPUT BAR ════ */
+    .input-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px 14px;
+      background: var(--surface);
+      border-top: 1px solid rgba(229,231,235,.7);
+    }
+    .input-field {
+      flex: 1;
+      min-height: 44px;
+      max-height: 100px;
+      padding: 10px 14px;
+      border-radius: 22px;
+      border: 1.5px solid #e0e4f0;
+      background: #f7f8ff;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--text);
+      resize: none;
+      overflow-y: auto;
+      outline: none;
+      transition: border-color .2s;
+      line-height: 1.4;
+    }
+    .input-field:focus { border-color: #4f46e5; background: #fff; }
+    .input-field::placeholder { color: #9ca3af; }
+    .send-btn {
+      width: 44px; height: 44px; flex-shrink: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1.15rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(79,70,229,.3);
+      transition: transform .15s, opacity .15s;
+    }
+    .send-btn:hover { opacity: .88; }
+    .send-btn:active { transform: scale(0.92); }
+    .send-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+    /* ════ DATE SEPARATOR ════ */
+    .chat-date {
+      text-align: center;
+      font-size: .8rem;
+      color: #9ca3af;
+      font-weight: 700;
+      margin: 4px 0;
+    }
+
+    /* ════ QUICK STARTERS ════ */
+    .starters-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding: 0 0 4px;
+    }
+    .starter-chip {
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1.5px solid #dde3ff;
+      background: #fff;
+      color: #4f46e5;
+      font-family: inherit;
+      font-size: .88rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .starter-chip:hover { background: #eef2ff; border-color: #4f46e5; }
+    .starter-chip:active { transform: scale(0.95); }
+
+    /* ════ DARK MODE OVERRIDES ════ */
+    @media(prefers-color-scheme: dark) {
+      .chat-content { background: var(--bg); }
+      .bubble--ai { background: var(--surface-2); }
+      .choice-chip { background: var(--surface-2); border-color: var(--line); color: #a5b4fc; }
+      .choice-chip:hover { background: var(--surface-3); border-color: #6d5efc; }
+      .typing-dots { background: var(--surface-2); }
+      .input-field { background: var(--surface-2); border-color: var(--line); color: var(--text); }
+      .input-field:focus { background: var(--surface-3); border-color: #a5b4fc; }
+      .input-bar { background: var(--surface); border-top-color: var(--line); }
+      .starter-chip { background: var(--surface-2); border-color: var(--line); color: #a5b4fc; }
+      .starter-chip:hover { background: var(--surface-3); }
+      .rights-summary-card { background: #1d2248; border-color: #3a4080; }
+      .rights-summary-card__title { color: #c7d2fe; }
+      .rights-summary-item { border-bottom-color: rgba(165,180,252,.1); }
+      .rights-summary-item__text { color: #c8cbd8; }
+      .rights-summary-item__title { color: #e0e7ff; }
+      .rights-summary-item__icon { background: var(--surface-3); }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-outer">
+    <div class="phone">
+
+      <section id="screen-ai" class="screen active">
+        <div class="status-bar">
+          <span id="clock">00:00</span>
+          <span>🔋 88%</span>
+        </div>
+
+        <header class="topbar">
+          <button class="topbar__back" id="backBtn">← กลับ</button>
+          <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:0;">
+            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;box-shadow:0 4px 12px rgba(79,70,229,.3);">🤖</div>
+            <div>
+              <div class="topbar__title" style="font-size:1.3rem;">AI ที่ปรึกษาสิทธิ</div>
+              <div style="font-size:.82rem;color:var(--text-soft);font-weight:700;margin-top:1px;" id="statusLabel">พร้อมช่วยเหลือ ✅</div>
+            </div>
+          </div>
+          <button onclick="clearChat()" style="background:none;border:none;cursor:pointer;font-size:1.2rem;padding:4px 6px;" title="ล้างแชท" aria-label="ล้างแชท">🗑️</button>
+        </header>
+
+        <!-- CHAT MESSAGES -->
+        <div class="chat-content" id="chatContent">
+          <div class="chat-date">วันนี้</div>
+        </div>
+
+        <!-- QUICK STARTERS (shown only at beginning) -->
+        <div id="startersBar" style="padding:8px 14px 6px; background:var(--surface); border-top:1px solid rgba(229,231,235,.7);">
+          <div style="font-size:.8rem;font-weight:900;color:var(--text-faint);margin-bottom:6px;">คำถามยอดนิยม</div>
+          <div class="starters-wrap">
+            <button class="starter-chip" onclick="sendStarter('ฉันมีสิทธิอะไรบ้าง')">🎯 สิทธิของฉัน</button>
+            <button class="starter-chip" onclick="sendStarter('เบี้ยยังชีพผู้สูงอายุได้เท่าไหร่')">💰 เบี้ยยังชีพ</button>
+            <button class="starter-chip" onclick="sendStarter('บัตรทองใช้ได้ที่ไหนบ้าง')">🏥 บัตรทอง</button>
+            <button class="starter-chip" onclick="sendStarter('ต้องใช้เอกสารอะไรบ้าง')">📄 เอกสาร</button>
+          </div>
+        </div>
+
+        <!-- INPUT BAR -->
+        <div class="input-bar">
+          <textarea
+            class="input-field"
+            id="inputField"
+            placeholder="พิมพ์คำถามของคุณ..."
+            rows="1"
+            onkeydown="handleKey(event)"
+            oninput="autoResize(this)"
+          ></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="ส่ง">➤</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // ══════════════════════════════════
+    // PAGE BRIDGE
+    // ══════════════════════════════════
+    const _orig = App.showScreen;
+    const pageMap = {
+      'screen-home':        'index.html',
+      'screen-rights':      'rights.html',
+      'screen-voice':       'voice.html',
+      'screen-volunteer':   'volunteer.html',
+      'screen-docs':        'docs.html',
+      'screen-steps':       'steps.html',
+      'screen-appointments':'appointments.html',
+      'screen-ai':          'ai-rights.html'
+    };
+    App.showScreen = function(id) {
+      const page = pageMap[id];
+      if (page && !document.getElementById(id)) { window.location.href = page; }
+      else { _orig(id); }
+    };
+    document.getElementById('backBtn').onclick = () => App.showScreen('screen-home');
+
+    // ══════════════════════════════════
+    // CLOCK
+    // ══════════════════════════════════
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent =
+        String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    // ══════════════════════════════════
+    // CHAT STATE
+    // ══════════════════════════════════
+    let conversationHistory = [];
+    let isLoading = false;
+    let currentChoicesId = null;  // track active choice group
+
+    const SYSTEM_PROMPT = `คุณคือ "น้องสิทธิ" ผู้ช่วย AI สำหรับแอป "สิทธิถึงบ้าน" ที่ช่วยผู้สูงอายุไทยเข้าใจสิทธิของตน
+
+บทบาทของคุณ:
+- ให้ข้อมูลสิทธิผู้สูงอายุไทยอย่างถูกต้อง เข้าใจง่าย อบอุ่น
+- ใช้ภาษาไทยที่เรียบง่าย สุภาพ เหมาะกับผู้สูงอายุ
+- เมื่อต้องการข้อมูลเพิ่มเติมจากผู้ใช้ ให้ตอบในรูปแบบ JSON พิเศษ
+
+กฎสำคัญ:
+1. ถ้าต้องการถามผู้ใช้เพื่อให้ข้อมูลที่แม่นยำขึ้น ให้ตอบในรูปแบบ JSON นี้ (ต้องเป็น JSON บริสุทธิ์ ไม่มี markdown backticks):
+{"type":"choices","text":"ข้อความอธิบาย","question":"คำถาม","choices":["ตัวเลือก 1","ตัวเลือก 2","ตัวเลือก 3"]}
+
+2. ถ้าตอบได้เลย ให้ตอบเป็นข้อความธรรมดา ไม่ใช่ JSON
+3. ถ้าผลการวิเคราะห์สิทธิพร้อม ให้ตอบในรูปแบบ JSON นี้:
+{"type":"rights_summary","text":"สรุปเบื้องต้น","rights":[{"icon":"💰","title":"ชื่อสิทธิ","detail":"รายละเอียด","amount":"จำนวนเงิน/ข้อมูล"}]}
+
+ข้อมูลสิทธิผู้สูงอายุไทย 2567:
+- เบี้ยยังชีพผู้สูงอายุ: 60-69 ปี = 600 บ./เดือน, 70-79 ปี = 700 บ., 80-89 ปี = 800 บ., 90+ ปี = 1,000 บ. (ต้องลงทะเบียนที่ อบต./เทศบาล)
+- บัตรทอง (30 บาท): ผู้มีสิทธิ์ทุกคนที่ไม่มีประกันสังคม/ข้าราชการ ครอบคลุมการรักษาที่ รพ.รัฐ
+- สิทธิผู้พิการ: เบี้ยความพิการ 1,000 บ./เดือน + บัตรคนพิการ
+- สิทธิผู้มีรายได้น้อย: บัตรสวัสดิการแห่งรัฐ (บัตรคนจน) ส่วนลดค่าครองชีพ
+- ที่พักอาศัย: โครงการบ้านเช่าราคาถูก กคช. สำหรับผู้สูงอายุรายได้น้อย
+- บริการสังคม: ศูนย์ผู้สูงอายุ กิจกรรม อาหาร บริการสุขภาพพื้นฐาน
+- สิทธิข้าราชการบำนาญ: เบิกค่ารักษาพยาบาลได้ที่ รพ.รัฐทุกแห่ง
+
+เริ่มต้นด้วยการทักทายอบอุ่นและถามข้อมูลพื้นฐาน (อายุ) เพื่อให้ข้อมูลที่ตรงกับสถานการณ์ของผู้ใช้ คำตอบแรกควรเป็น JSON choices เพื่อถามอายุ`;
+
+    // ══════════════════════════════════
+    // RENDER HELPERS
+    // ══════════════════════════════════
+    function scrollBottom() {
+      const c = document.getElementById('chatContent');
+      setTimeout(() => c.scrollTop = c.scrollHeight, 80);
+    }
+
+    function addUserBubble(text) {
+      const c = document.getElementById('chatContent');
+      const row = document.createElement('div');
+      row.className = 'bubble-row bubble-row--user';
+      row.innerHTML = `<div class="bubble bubble--user">${escapeHtml(text)}</div>`;
+      c.appendChild(row);
+      scrollBottom();
+    }
+
+    function addAiBubble(html, isHtml = false) {
+      const c = document.getElementById('chatContent');
+      const row = document.createElement('div');
+      row.className = 'bubble-row bubble-row--ai';
+      row.innerHTML = `
+        <div class="ai-avatar">🤖</div>
+        <div class="bubble bubble--ai">${isHtml ? html : escapeHtml(html).replace(/\n/g,'<br>')}</div>
+      `;
+      c.appendChild(row);
+      scrollBottom();
+      return row;
+    }
+
+    function addChoices(question, choices, choicesId) {
+      const c = document.getElementById('chatContent');
+      const wrap = document.createElement('div');
+      wrap.className = 'choices-wrap';
+      wrap.id = 'choices-' + choicesId;
+      if (question) {
+        const q = document.createElement('div');
+        q.style.cssText = 'font-size:.88rem;font-weight:900;color:var(--text-faint);padding:0 2px 2px;';
+        q.textContent = question;
+        wrap.appendChild(q);
+      }
+      choices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-chip';
+        btn.textContent = choice;
+        btn.onclick = () => onChoiceSelected(choice, choicesId);
+        wrap.appendChild(btn);
+      });
+      c.appendChild(wrap);
+      scrollBottom();
+    }
+
+    function addRightsSummary(text, rights) {
+      const c = document.getElementById('chatContent');
+      // Text bubble first
+      addAiBubble(text);
+
+      // Rights card
+      const row = document.createElement('div');
+      row.className = 'bubble-row bubble-row--ai';
+      let itemsHtml = rights.map(r => `
+        <div class="rights-summary-item">
+          <div class="rights-summary-item__icon">${r.icon}</div>
+          <div class="rights-summary-item__text">
+            <div class="rights-summary-item__title">${escapeHtml(r.title)}</div>
+            ${escapeHtml(r.detail)}${r.amount ? `<br><b>${escapeHtml(r.amount)}</b>` : ''}
+          </div>
+        </div>
+      `).join('');
+      row.innerHTML = `
+        <div class="ai-avatar">🤖</div>
+        <div class="rights-summary-card">
+          <div class="rights-summary-card__title">📋 สิทธิที่คุณอาจได้รับ</div>
+          ${itemsHtml}
+        </div>
+      `;
+      c.appendChild(row);
+
+      // Follow-up actions
+      const actRow = document.createElement('div');
+      actRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;padding:0 2px;animation:fadeUp .35s both;';
+      ['📄 ดูเอกสารที่ต้องใช้', '🤝 ขออาสาช่วย', '❓ ถามเพิ่มเติม'].forEach(label => {
+        const btn = document.createElement('button');
+        btn.className = 'starter-chip';
+        btn.textContent = label;
+        btn.onclick = () => {
+          if (label.includes('เอกสาร')) App.showScreen('screen-docs');
+          else if (label.includes('อาสา')) App.showScreen('screen-volunteer');
+          else { sendStarter('อยากทราบรายละเอียดเพิ่มเติม'); }
+        };
+        actRow.appendChild(btn);
+      });
+      c.appendChild(actRow);
+      scrollBottom();
+    }
+
+    function showTyping() {
+      const c = document.getElementById('chatContent');
+      const row = document.createElement('div');
+      row.className = 'bubble-row bubble-row--ai typing-row';
+      row.id = 'typingIndicator';
+      row.innerHTML = `
+        <div class="ai-avatar">🤖</div>
+        <div class="typing-dots">
+          <span></span><span></span><span></span>
+        </div>
+      `;
+      c.appendChild(row);
+      scrollBottom();
+    }
+
+    function hideTyping() {
+      const el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ══════════════════════════════════
+    // CHOICE SELECTION
+    // ══════════════════════════════════
+    function onChoiceSelected(choice, choicesId) {
+      // Disable all chips in this group
+      const wrap = document.getElementById('choices-' + choicesId);
+      if (wrap) {
+        wrap.querySelectorAll('.choice-chip').forEach(b => b.classList.add('used'));
+      }
+      // Show as user bubble
+      addUserBubble(choice);
+      // Add to history and call AI
+      conversationHistory.push({ role: 'user', content: choice });
+      callAI();
+    }
+
+    // ══════════════════════════════════
+    // SEND MESSAGE
+    // ══════════════════════════════════
+    function sendMessage() {
+      const field = document.getElementById('inputField');
+      const text = field.value.trim();
+      if (!text || isLoading) return;
+      field.value = '';
+      autoResize(field);
+      hideStartersBar();
+      addUserBubble(text);
+      conversationHistory.push({ role: 'user', content: text });
+      callAI();
+    }
+
+    function sendStarter(text) {
+      hideStartersBar();
+      addUserBubble(text);
+      conversationHistory.push({ role: 'user', content: text });
+      callAI();
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+    }
+
+    function hideStartersBar() {
+      const bar = document.getElementById('startersBar');
+      if (bar && conversationHistory.length > 0) {
+        bar.style.display = 'none';
+      }
+    }
+
+    // ══════════════════════════════════
+    // CALL ANTHROPIC API
+    // ══════════════════════════════════
+    async function callAI() {
+      if (isLoading) return;
+      isLoading = true;
+
+      const sendBtn = document.getElementById('sendBtn');
+      const statusLabel = document.getElementById('statusLabel');
+      sendBtn.disabled = true;
+      statusLabel.textContent = 'กำลังคิด... 💭';
+
+      showTyping();
+
+      try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1000,
+            system: SYSTEM_PROMPT,
+            messages: conversationHistory
+          })
+        });
+
+        const data = await response.json();
+        hideTyping();
+
+        const rawText = data.content?.[0]?.text?.trim() || '';
+
+        // Try to parse as JSON for special types
+        let parsed = null;
+        try {
+          // Strip possible markdown fences
+          const clean = rawText.replace(/^```json\s*/,'').replace(/```\s*$/,'').trim();
+          parsed = JSON.parse(clean);
+        } catch (_) { parsed = null; }
+
+        if (parsed && parsed.type === 'choices') {
+          // Show text bubble + choices
+          if (parsed.text) addAiBubble(parsed.text);
+          const choicesId = Date.now();
+          currentChoicesId = choicesId;
+          addChoices(parsed.question || null, parsed.choices, choicesId);
+          conversationHistory.push({ role: 'assistant', content: rawText });
+
+        } else if (parsed && parsed.type === 'rights_summary') {
+          addRightsSummary(parsed.text, parsed.rights || []);
+          conversationHistory.push({ role: 'assistant', content: rawText });
+
+        } else {
+          // Plain text response
+          addAiBubble(rawText);
+          conversationHistory.push({ role: 'assistant', content: rawText });
+        }
+
+        statusLabel.textContent = 'พร้อมช่วยเหลือ ✅';
+
+      } catch (err) {
+        hideTyping();
+        addAiBubble('ขออภัยค่ะ ขณะนี้เชื่อมต่อ AI ไม่ได้ กรุณาลองใหม่อีกครั้ง 🙏');
+        statusLabel.textContent = 'เชื่อมต่อไม่ได้ ⚠️';
+        console.error('AI error:', err);
+      }
+
+      isLoading = false;
+      document.getElementById('sendBtn').disabled = false;
+    }
+
+    // ══════════════════════════════════
+    // CLEAR CHAT
+    // ══════════════════════════════════
+    function clearChat() {
+      if (!confirm('ล้างประวัติการสนทนาทั้งหมด?')) return;
+      conversationHistory = [];
+      const c = document.getElementById('chatContent');
+      c.innerHTML = '<div class="chat-date">วันนี้</div>';
+      document.getElementById('startersBar').style.display = '';
+      document.getElementById('statusLabel').textContent = 'พร้อมช่วยเหลือ ✅';
+      // Re-trigger welcome
+      startConversation();
+    }
+
+    // ══════════════════════════════════
+    // AUTO-START
+    // ══════════════════════════════════
+    function startConversation() {
+      // Trigger AI to send the first greeting with choices
+      conversationHistory = [{ role: 'user', content: 'สวัสดี' }];
+      callAI();
+    }
+
+    window.addEventListener('load', () => {
+      startConversation();
+    });
+  </script>
+</body>
+</html>
