@@ -250,5 +250,371 @@
       }
     };
   </script>
+
+  <script>
+  (() => {
+    function injectStatusFeature() {
+      const style = document.createElement("style");
+      style.textContent = `
+        .status-modal-overlay{
+          position:fixed; inset:0; background:rgba(8,12,30,.55);
+          backdrop-filter: blur(4px);
+          display:none; align-items:flex-end; justify-content:center;
+          z-index:9999;
+        }
+        .status-modal-overlay.active{ display:flex; }
+
+        .status-sheet{
+          width:min(100%, 430px);
+          max-height:88vh;
+          overflow:auto;
+          background:linear-gradient(180deg,#1b2145 0%, #10162f 100%);
+          color:#fff;
+          border-radius:24px 24px 0 0;
+          box-shadow:0 -10px 35px rgba(0,0,0,.28);
+          padding:18px 16px 22px;
+          animation:statusSheetIn .22s ease;
+        }
+
+        @keyframes statusSheetIn{
+          from{ transform:translateY(30px); opacity:0; }
+          to{ transform:translateY(0); opacity:1; }
+        }
+
+        .status-sheet__grab{
+          width:54px; height:6px; border-radius:99px;
+          background:rgba(255,255,255,.25); margin:0 auto 14px;
+        }
+
+        .status-sheet__head{
+          display:flex; align-items:center; justify-content:space-between; gap:12px;
+          margin-bottom:14px;
+        }
+
+        .status-sheet__title{
+          margin:0; font-size:1.2rem; font-weight:900;
+        }
+
+        .status-close{
+          border:none; background:rgba(255,255,255,.12); color:#fff;
+          width:40px; height:40px; border-radius:12px; cursor:pointer;
+          font-size:1.1rem;
+        }
+
+        .status-alert{
+          display:flex; gap:12px; align-items:flex-start;
+          background:rgba(255,193,7,.12);
+          border:1px solid rgba(255,193,7,.35);
+          border-radius:18px; padding:14px;
+          margin-bottom:14px;
+        }
+
+        .status-alert__icon{ font-size:1.5rem; line-height:1; }
+        .status-alert__title{ font-weight:800; margin-bottom:4px; color:#ffd54f; }
+        .status-alert__desc{ color:#e8ecff; opacity:.92; font-size:.95rem; }
+
+        .status-summary{
+          display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+          margin-bottom:14px;
+        }
+
+        .status-mini-card{
+          background:rgba(255,255,255,.06);
+          border:1px solid rgba(255,255,255,.12);
+          border-radius:18px; padding:12px; text-align:center;
+        }
+
+        .status-mini-card__value{
+          font-size:1.35rem; font-weight:900; margin-bottom:4px;
+        }
+
+        .status-mini-card__label{
+          font-size:.84rem; opacity:.86;
+        }
+
+        .status-list{
+          display:flex; flex-direction:column; gap:12px;
+        }
+
+        .status-card{
+          background:rgba(255,255,255,.06);
+          border:1px solid rgba(255,255,255,.12);
+          border-radius:20px; padding:14px;
+        }
+
+        .status-card__top{
+          display:flex; align-items:center; justify-content:space-between; gap:8px;
+          margin-bottom:10px;
+        }
+
+        .status-card__name{
+          font-size:1rem; font-weight:800;
+        }
+
+        .status-badge{
+          padding:6px 10px; border-radius:999px;
+          font-size:.8rem; font-weight:800;
+          white-space:nowrap;
+        }
+
+        .status-badge.ok{ background:#dcfce7; color:#166534; }
+        .status-badge.warn{ background:#fef3c7; color:#92400e; }
+        .status-badge.danger{ background:#fee2e2; color:#991b1b; }
+
+        .status-row{
+          display:flex; justify-content:space-between; gap:10px;
+          font-size:.92rem; color:#e6ebff; margin:6px 0;
+        }
+
+        .status-countdown{
+          margin-top:10px; padding:10px 12px;
+          border-radius:14px; background:rgba(79,70,229,.16);
+          color:#dbe4ff; font-size:.9rem;
+        }
+
+        .status-actions{
+          display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:12px;
+        }
+
+        .status-btn{
+          border:none; border-radius:14px; min-height:42px;
+          font-weight:800; cursor:pointer; padding:10px 12px;
+        }
+
+        .status-btn--primary{
+          background:#8ea2ff; color:#111936;
+        }
+
+        .status-btn--ghost{
+          background:rgba(255,255,255,.1); color:#fff;
+          border:1px solid rgba(255,255,255,.12);
+        }
+
+        .status-ai-tip{
+          margin-top:14px;
+          background:linear-gradient(180deg, rgba(219,39,119,.16), rgba(168,85,247,.14));
+          border:1px solid rgba(236,72,153,.28);
+          border-radius:18px; padding:14px;
+        }
+
+        .status-ai-tip__title{
+          font-weight:900; margin-bottom:6px;
+        }
+
+        .status-ai-tip__text{
+          font-size:.93rem; color:#f5eefe; line-height:1.5;
+        }
+      `;
+      document.head.appendChild(style);
+
+      const modal = document.createElement("div");
+      modal.className = "status-modal-overlay";
+      modal.id = "rightsStatusModal";
+      modal.innerHTML = `
+        <div class="status-sheet" role="dialog" aria-modal="true" aria-labelledby="rightsStatusTitle">
+          <div class="status-sheet__grab"></div>
+
+          <div class="status-sheet__head">
+            <h3 class="status-sheet__title" id="rightsStatusTitle">ตรวจสอบสถานะสิทธิ</h3>
+            <button class="status-close" id="rightsStatusClose" aria-label="ปิด">✕</button>
+          </div>
+
+          <div class="status-alert">
+            <div class="status-alert__icon">🔔</div>
+            <div>
+              <div class="status-alert__title">แจ้งเตือนสิทธิอัตโนมัติ</div>
+              <div class="status-alert__desc" id="rightsStatusAlertText">
+                ระบบกำลังประเมินข้อมูลสิทธิของคุณ
+              </div>
+            </div>
+          </div>
+
+          <div class="status-summary">
+            <div class="status-mini-card">
+              <div class="status-mini-card__value" id="statusReadyCount">0</div>
+              <div class="status-mini-card__label">พร้อมใช้</div>
+            </div>
+            <div class="status-mini-card">
+              <div class="status-mini-card__value" id="statusWarnCount">0</div>
+              <div class="status-mini-card__label">ใกล้ครบกำหนด</div>
+            </div>
+            <div class="status-mini-card">
+              <div class="status-mini-card__value" id="statusExpiredCount">0</div>
+              <div class="status-mini-card__label">ต้องตรวจสอบ</div>
+            </div>
+          </div>
+
+          <div class="status-list" id="rightsStatusList"></div>
+
+          <div class="status-ai-tip">
+            <div class="status-ai-tip__title">💡 AI แนะนำให้คุณ</div>
+            <div class="status-ai-tip__text" id="rightsAITipText">
+              ควรเริ่มจากตรวจสอบสิทธิที่ใกล้ครบกำหนดก่อน แล้วค่อยเตรียมเอกสารที่ยังขาด
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      const sampleRights = [
+        {
+          name: "เบี้ยยังชีพผู้สูงอายุ",
+          status: "ok",
+          statusText: "ใช้งานได้",
+          detail: "รับสิทธิได้ตามช่วงอายุของคุณ",
+          expireText: "อัปเดตข้อมูลล่าสุดแล้ว",
+          countdown: "ไม่มีรายการเร่งด่วน",
+          primaryText: "📄 ดูเอกสาร",
+          primaryAction: () => App.showScreen("screen-docs"),
+          ghostText: "🔊 อ่านให้ฟัง",
+          ghostAction: () => App.speakText("เบี้ยยังชีพผู้สูงอายุของคุณอยู่ในสถานะใช้งานได้ และไม่มีรายการเร่งด่วน")
+        },
+        {
+          name: "สิทธิรักษาพยาบาล",
+          status: "warn",
+          statusText: "ควรตรวจสอบ",
+          detail: "ควรเช็กหน่วยบริการและข้อมูลสิทธิรักษา",
+          expireText: "ควรยืนยันข้อมูลภายใน 7 วัน",
+          countdown: "เหลือเวลาแนะนำอีก 7 วัน",
+          primaryText: "🔔 ตั้งแจ้งเตือน",
+          primaryAction: () => App.showToast("ตั้งแจ้งเตือนสิทธิรักษาแล้ว"),
+          ghostText: "🤝 ขอคนช่วย",
+          ghostAction: () => App.showScreen("screen-volunteer")
+        },
+        {
+          name: "สิทธิช่วยเหลือเพิ่มเติม",
+          status: "danger",
+          statusText: "ต้องติดตาม",
+          detail: "อาจต้องยื่นเอกสารเพิ่มกับหน่วยงานในพื้นที่",
+          expireText: "ยังไม่มีข้อมูลยืนยันล่าสุด",
+          countdown: "แนะนำให้ติดต่อ อบต. หรือเทศบาลเร็วที่สุด",
+          primaryText: "📞 ติดต่ออาสา",
+          primaryAction: () => App.showScreen("screen-volunteer"),
+          ghostText: "💡 ให้ AI ช่วย",
+          ghostAction: () => {
+            if (typeof App.askAI === "function") {
+              const fakeAnswerEl = document.createElement("div");
+              const fakeStatusEl = document.createElement("div");
+              App.askAI("ช่วยสรุปว่าฉันควรตรวจสอบสถานะสิทธิอะไรบ้างและควรทำอะไรก่อน", fakeAnswerEl, fakeStatusEl);
+              App.showToast("กำลังให้ AI ช่วยวิเคราะห์...");
+            } else {
+              App.showToast("กำลังพัฒนาฟังก์ชัน AI");
+            }
+          }
+        }
+      ];
+
+      function renderStatusCards() {
+        const list = document.getElementById("rightsStatusList");
+        const readyCount = document.getElementById("statusReadyCount");
+        const warnCount = document.getElementById("statusWarnCount");
+        const expiredCount = document.getElementById("statusExpiredCount");
+        const alertText = document.getElementById("rightsStatusAlertText");
+        const aiTip = document.getElementById("rightsAITipText");
+
+        if (!list) return;
+
+        const okCount = sampleRights.filter(x => x.status === "ok").length;
+        const warnC = sampleRights.filter(x => x.status === "warn").length;
+        const dangerCount = sampleRights.filter(x => x.status === "danger").length;
+
+        readyCount.textContent = okCount;
+        warnCount.textContent = warnC;
+        expiredCount.textContent = dangerCount;
+
+        if (dangerCount > 0) {
+          alertText.textContent = "คุณมีสิทธิที่ควรรีบติดตามอย่างน้อย 1 รายการ";
+          aiTip.textContent = "เริ่มจากสิทธิที่ขึ้นว่า 'ต้องติดตาม' ก่อน จากนั้นค่อยตรวจสอบสิทธิรักษาพยาบาลและเอกสารประกอบ";
+        } else if (warnC > 0) {
+          alertText.textContent = "มีบางสิทธิที่ควรตรวจสอบข้อมูลเพิ่มเติม";
+          aiTip.textContent = "ตอนนี้ยังไม่มีรายการวิกฤต แต่ควรเช็กข้อมูลสิทธิรักษาและตั้งแจ้งเตือนไว้";
+        } else {
+          alertText.textContent = "สิทธิของคุณอยู่ในสถานะพร้อมใช้งาน";
+          aiTip.textContent = "สิทธิหลักของคุณพร้อมใช้แล้ว ควรเก็บเอกสารให้ครบและตั้งแจ้งเตือนล่วงหน้า";
+        }
+
+        list.innerHTML = sampleRights.map((item, index) => `
+          <div class="status-card">
+            <div class="status-card__top">
+              <div class="status-card__name">${item.name}</div>
+              <span class="status-badge ${item.status}">${item.statusText}</span>
+            </div>
+
+            <div class="status-row">
+              <span>รายละเอียด</span>
+              <span>${item.detail}</span>
+            </div>
+
+            <div class="status-row">
+              <span>สถานะล่าสุด</span>
+              <span>${item.expireText}</span>
+            </div>
+
+            <div class="status-countdown">${item.countdown}</div>
+
+            <div class="status-actions">
+              <button class="status-btn status-btn--primary" data-action="primary" data-index="${index}">
+                ${item.primaryText}
+              </button>
+              <button class="status-btn status-btn--ghost" data-action="ghost" data-index="${index}">
+                ${item.ghostText}
+              </button>
+            </div>
+          </div>
+        `).join("");
+
+        list.querySelectorAll("button[data-action]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const index = Number(btn.dataset.index);
+            const type = btn.dataset.action;
+            const item = sampleRights[index];
+            if (!item) return;
+            if (type === "primary") item.primaryAction();
+            if (type === "ghost") item.ghostAction();
+          });
+        });
+      }
+
+      function openStatusModal() {
+        renderStatusCards();
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeStatusModal() {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeStatusModal();
+      });
+
+      modal.querySelector("#rightsStatusClose").addEventListener("click", closeStatusModal);
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.classList.contains("active")) {
+          closeStatusModal();
+        }
+      });
+
+      const allCards = [...document.querySelectorAll(".contact-card")];
+      const statusCard = allCards.find((card) => {
+        const title = card.querySelector(".contact-card__title");
+        return title && title.textContent.includes("ตรวจสอบสถานะสิทธิ");
+      });
+
+      if (statusCard) {
+        statusCard.onclick = openStatusModal;
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", injectStatusFeature);
+    } else {
+      injectStatusFeature();
+    }
+  })();
+  </script>
 </body>
 </html>
